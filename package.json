@@ -14,9 +14,9 @@
     "sync-env": "bash scripts/sync-env-from-infra.sh",
     "status": "bash scripts/status.sh",
     "docker:app": "docker compose -f docker-compose.app.yml up --build",
-    "lint": "npm run lint -ws --if-present",
+    "lint": "npm run build -w @notes/shared && npm run prisma:generate -w @notes/api && npm run lint -ws --if-present",
     "test": "npm run test -ws --if-present",
-    "build": "npm run build -ws --if-present",
+    "build": "npm run build -w @notes/shared && npm run prisma:generate -w @notes/api && npm run build -ws --if-present",
     "test:e2e": "npm run test:e2e -w @notes/api"
   },
   "engines": {

@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { Kafka, logLevel } from 'kafkajs';
 import { PrismaClient, Prisma } from '@prisma/client';
 import pino from 'pino';
-import { KAFKA_TOPICS } from '@notes/shared';
+import { KAFKA_TOPICS, type KafkaTopic } from '@notes/shared';
 
 const logger = pino({
   level: process.env.LOG_LEVEL ?? 'info',
@@ -10,7 +10,7 @@ const logger = pino({
 });
 
 const prisma = new PrismaClient();
-const topics = Object.values(KAFKA_TOPICS);
+const topics: KafkaTopic[] = Object.values(KAFKA_TOPICS);
 
 async function ensureTopics(kafka: Kafka, topicNames: string[]) {
   const admin = kafka.admin();
@@ -72,7 +72,7 @@ async function main() {
   await consumer.run({
     eachMessage: async ({ topic, partition, message }) => {
       const raw = message.value?.toString() ?? '{}';
-      let payload: Record<string, unknown> = {};
+      let payload: Record<string, unknown>;
       try {
         payload = JSON.parse(raw) as Record<string, unknown>;
       } catch {
@@ -87,7 +87,7 @@ async function main() {
       await prisma.eventAudit.create({
         data: {
           topic,
-          payload: payload as Prisma.InputJsonValue,
+          payload: payload as Prisma.JsonObject,
           correlationId,
         },
       });
