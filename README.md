@@ -35,6 +35,8 @@ Infra-доки — в репо **[notes-infra](https://github.com/WeissbergAA/no
 | Установка + миграции + seed | `make setup` → `scripts/setup.sh` |
 | Запуск api + consumer + web | `make dev` |
 | Статус всего стека | `make status` → `scripts/status.sh` |
+| Освободить порты app (:3000, :5173) | `make free-ports` / `npm run free-ports` |
+| Убить всё + остановить infra | `make kill-ports` / `npm run kill-ports` |
 | Шпаргалка команд | `Makefile` в корне |
 
 ### Health API (наблюдаемость)

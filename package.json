@@ -13,6 +13,8 @@
     "setup": "bash scripts/setup.sh",
     "sync-env": "bash scripts/sync-env-from-infra.sh",
     "status": "bash scripts/status.sh",
+    "free-ports": "bash scripts/free-ports.sh",
+    "kill-ports": "bash scripts/free-ports.sh --all",
     "docker:app": "docker compose -f docker-compose.app.yml up --build",
     "lint": "npm run build -w @notes/shared && npm run prisma:generate -w @notes/api && npm run lint -ws --if-present",
     "test": "npm run test -ws --if-present",
