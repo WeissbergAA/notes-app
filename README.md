@@ -7,21 +7,22 @@ Monorepo учебного fullstack-проекта **Notes App** — серви�
 - **GitHub (app):** https://github.com/WeissbergAA/notes-app  
 - **GitHub (infra):** https://github.com/WeissbergAA/notes-infra  
 
-> **Быстрый старт:** [docs/QUICKSTART.ru.md](docs/QUICKSTART.ru.md) — пошаговая инструкция от нуля до браузера.
+> **Быстрый старт:** [docs/QUICKSTART.ru.md](docs/QUICKSTART.ru.md)  
+> **DevOps для новичков:** [docs/DEVOPS-TOUR.ru.md](docs/DEVOPS-TOUR.ru.md) · [docs/CHAOS-LAB.ru.md](docs/CHAOS-LAB.ru.md)
 
 ---
 
 ## Запуск за 3 команды
 
 ```bash
-# 1. Infra (Docker Desktop должен быть запущен)
-cd notes-infra && cp .env.example .env && ./scripts/up.sh && ./scripts/healthcheck.sh
+# 1. Infra
+cd notes-infra && cp .env.example .env && make up && make health
 
 # 2. App — первый раз
-cd ../notes-app && npm run setup
+cd ../notes-app && make sync-env && make setup
 
 # 3. App — каждый день
-npm run dev
+make dev && make status
 ```
 
 | Сервис | URL |
