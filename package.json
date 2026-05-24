@@ -6,6 +6,7 @@
     "packages/*"
   ],
   "scripts": {
+    "dev": "concurrently -n api,consumer,web -c blue,magenta,green \"npm run dev:api\" \"npm run dev:consumer\" \"npm run dev:web\"",
     "dev:api": "npm run dev -w @notes/api",
     "dev:web": "npm run dev -w @notes/web",
     "dev:consumer": "npm run dev -w @notes/consumer",
@@ -18,5 +19,8 @@
   },
   "engines": {
     "node": ">=20"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
   }
 }
