@@ -1,7 +1,7 @@
 import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Kafka, Producer, logLevel } from 'kafkajs';
-import { KafkaTopic } from '@notes/shared';
+import { KafkaTopic, KAFKA_TOPICS } from '@notes/shared';
 
 @Injectable()
 export class KafkaService implements OnModuleInit, OnModuleDestroy {
@@ -17,9 +17,11 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
       clientId: 'notes-api',
       brokers: brokers.split(','),
       logLevel: logLevel.ERROR,
+      retry: { retries: 10, initialRetryTime: 3000 },
     });
     this.producer = kafka.producer();
     try {
+      await this.ensureTopics(kafka);
       await this.producer.connect();
       this.logger.log(`Kafka producer connected to ${brokers}`);
     } catch (error) {
@@ -27,6 +29,29 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
       this.logger.warn(
         `Kafka unavailable, events will be skipped: ${(error as Error).message}`,
       );
+    }
+  }
+
+  private async ensureTopics(kafka: Kafka) {
+    const admin = kafka.admin();
+    await admin.connect();
+    try {
+      const topicNames = Object.values(KAFKA_TOPICS);
+      const existing = await admin.listTopics();
+      const missing = topicNames.filter((topic) => !existing.includes(topic));
+      if (missing.length > 0) {
+        await admin.createTopics({
+          topics: missing.map((topic) => ({
+            topic,
+            numPartitions: 1,
+            replicationFactor: 1,
+          })),
+          waitForLeaders: true,
+        });
+        this.logger.log(`Created Kafka topics: ${missing.join(', ')}`);
+      }
+    } finally {
+      await admin.disconnect();
     }
   }
 

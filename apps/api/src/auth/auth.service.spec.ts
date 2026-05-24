@@ -50,4 +50,17 @@ describe('AuthService', () => {
     });
     expect(result.accessToken).toBe('token-123');
   });
+
+  it('maps admin shortcut to admin@admin.com', async () => {
+    const hash = await bcrypt.hash('admin', 10);
+    prisma.user.findUnique.mockResolvedValue({
+      id: 'u1',
+      email: 'admin@admin.com',
+      passwordHash: hash,
+    });
+    await service.login({ email: 'admin', password: 'admin' });
+    expect(prisma.user.findUnique).toHaveBeenCalledWith({
+      where: { email: 'admin@admin.com' },
+    });
+  });
 });

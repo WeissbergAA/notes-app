@@ -16,10 +16,10 @@ test('register, create note, create and submit form', async ({ page }) => {
 
   await page.getByRole('link', { name: 'Forms' }).click();
   await page.getByRole('button', { name: 'Create default form' }).click();
-  await page.getByRole('button', { name: 'Fill form' }).first().click();
+  await page.getByRole('button', { name: 'Fill' }).first().click();
   await page.getByLabel('Name').fill('Test User');
   await page.getByLabel('Email', { exact: true }).fill('e2e@test.com');
   await page.getByLabel('Message').fill('Feedback');
-  page.once('dialog', (dialog) => dialog.accept());
   await page.getByRole('button', { name: 'Submit' }).click();
+  await expect(page.getByText('Submitted successfully!')).toBeVisible();
 });

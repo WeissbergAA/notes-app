@@ -13,11 +13,12 @@ export class RegisterDto {
 }
 
 export class LoginDto {
-  @ApiProperty({ example: 'user@example.com' })
-  @IsEmail()
+  @ApiProperty({ example: 'admin', description: 'Email or "admin" shortcut' })
+  @IsString()
+  @MinLength(1)
   email!: string;
 
-  @ApiProperty({ example: 'secret123' })
+  @ApiProperty({ example: 'admin' })
   @IsString()
   password!: string;
 }
