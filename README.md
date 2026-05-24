@@ -135,42 +135,10 @@ cp .env.example .env
 
 ```bash
 cd ~/GolandProjects/awesomeProject/notes-app
-npm install
+npm run setup
 ```
 
-### Шаг 3. Настроить переменные окружения
-
-```bash
-cp apps/api/.env.example apps/api/.env
-cp apps/web/.env.example apps/web/.env
-cp apps/consumer/.env.example apps/consumer/.env
-```
-
-Содержимое `apps/api/.env` (по умолчанию уже подходит):
-
-```env
-DATABASE_URL=postgresql://notes:notes@localhost:5433/notes?schema=public
-JWT_SECRET=change-me-in-production
-JWT_EXPIRES_IN=24h
-KAFKA_BROKERS=localhost:9093
-PORT=3000
-LOG_LEVEL=info
-```
-
-Содержимое `apps/web/.env`:
-
-```env
-VITE_API_URL=http://localhost:3000
-```
-
-### Шаг 4. Применить миграции БД
-
-```bash
-npm run prisma:generate -w @notes/api
-npx prisma migrate deploy --schema apps/api/prisma/schema.prisma
-```
-
-### Шаг 5. Запустить сервисы
+Или вручную: `npm install`, скопировать `.env`, `prisma migrate deploy`.
 
 Нужны **три терминала** (или Run Configurations в GoLand):
 
@@ -196,8 +164,9 @@ npm run dev:web
 
 1. Открой http://localhost:5173
 2. **Register** — создай аккаунт (email + пароль мин. 6 символов)
-3. **Notes** — создавай и удаляй заметки
+3. **Notes** — создавай, редактируй и удаляй заметки
 4. **Forms** — создай форму, заполни и отправь ответ
+5. **Events** — просмотр Kafka audit (нужен запущенный consumer)
 
 ### Через Swagger
 

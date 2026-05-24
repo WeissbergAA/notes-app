@@ -132,4 +132,14 @@ describe('Notes App (e2e)', () => {
   it('returns 401 without token', () => {
     return request(app.getHttpServer()).get('/api/v1/notes').expect(401);
   });
+
+  it('GET /events/audit', () => {
+    return request(app.getHttpServer())
+      .get('/api/v1/events/audit')
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200)
+      .expect(({ body }) => {
+        expect(Array.isArray(body)).toBe(true);
+      });
+  });
 });

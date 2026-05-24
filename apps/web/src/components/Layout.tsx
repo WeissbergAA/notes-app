@@ -14,6 +14,7 @@ export function Layout() {
         <nav>
           <Link to="/notes">Notes</Link>
           <Link to="/forms">Forms</Link>
+          <Link to="/events">Events</Link>
           <button onClick={logout}>Logout</button>
         </nav>
       </header>
