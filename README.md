@@ -7,6 +7,30 @@ Monorepo учебного fullstack-проекта **Notes App** — серви�
 - **GitHub (app):** https://github.com/WeissbergAA/notes-app  
 - **GitHub (infra):** https://github.com/WeissbergAA/notes-infra  
 
+> **Быстрый старт:** [docs/QUICKSTART.ru.md](docs/QUICKSTART.ru.md) — пошаговая инструкция от нуля до браузера.
+
+---
+
+## Запуск за 3 команды
+
+```bash
+# 1. Infra (Docker Desktop должен быть запущен)
+cd notes-infra && cp .env.example .env && ./scripts/up.sh && ./scripts/healthcheck.sh
+
+# 2. App — первый раз
+cd ../notes-app && npm run setup
+
+# 3. App — каждый день
+npm run dev
+```
+
+| Сервис | URL |
+|--------|-----|
+| Web | http://localhost:5173 |
+| Swagger | http://localhost:3000/api/docs |
+| Kafka UI | http://localhost:8080 |
+| Kibana (full infra) | http://localhost:5602 |
+
 ---
 
 ## Зачем нужен этот проект
@@ -138,23 +162,23 @@ cd ~/GolandProjects/awesomeProject/notes-app
 npm run setup
 ```
 
-Или вручную: `npm install`, скопировать `.env`, `prisma migrate deploy`.
+### Шаг 3. Запустить приложение
 
-Нужны **три терминала** (или Run Configurations в GoLand):
+**Одной командой:**
 
 ```bash
-# Терминал 1 — API
-npm run dev:api
-# → http://localhost:3000
-# → Swagger: http://localhost:3000/api/docs
-
-# Терминал 2 — Kafka consumer
-npm run dev:consumer
-
-# Терминал 3 — Web UI
-npm run dev:web
-# → http://localhost:5173
+npm run dev
 ```
+
+Или в **трёх терминалах** (удобно в GoLand):
+
+```bash
+npm run dev:api       # http://localhost:3000 — Swagger: /api/docs
+npm run dev:consumer  # Kafka → EventAudit
+npm run dev:web       # http://localhost:5173
+```
+
+Подробнее: [docs/QUICKSTART.ru.md](docs/QUICKSTART.ru.md)
 
 ---
 
@@ -404,4 +428,4 @@ docker run --rm -p 3000:3000 --network notes-net \
 
 ## Статус
 
-Учебный MVP **v0.1.0**. Подходит для практики DevOps и fullstack, не для production без доработок безопасности и эксплуатации.
+Учебный проект **v0.2.0**. Подходит для практики DevOps и fullstack, не для production без доработок безопасности и эксплуатации.
