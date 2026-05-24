@@ -10,7 +10,8 @@
 |-----|---------|
 | http://localhost:5173 | Web-интерфейс (заметки, формы, events) |
 | http://localhost:3000/api/docs | Swagger — документация API |
-| http://localhost:3000/api/v1/health | Health check API |
+| http://localhost:3000/api/v1/health | Liveness API |
+| http://localhost:3000/api/v1/health/ready | Readiness (Postgres + Kafka) |
 | http://localhost:8080 | Kafka UI — топики и сообщения |
 | http://localhost:5602 | Kibana — логи (только full-профиль infra) |
 
@@ -37,6 +38,8 @@ notes-infra  ──────►  notes-app setup  ──────►  npm 
 
 Infra **всегда первой**. Без Postgres и Kafka API не стартует нормально.
 
+**Для изучения DevOps:** [DEVOPS-TOUR.ru.md](./DEVOPS-TOUR.ru.md) · [CHAOS-LAB.ru.md](./CHAOS-LAB.ru.md)
+
 ---
 
 ## Шаг 1 — Инфраструктура (notes-infra)
@@ -45,8 +48,9 @@ Infra **всегда первой**. Без Postgres и Kafka API не стар�
 cd ~/GolandProjects/awesomeProject/notes-infra
 
 cp .env.example .env
-./scripts/up.sh
-./scripts/healthcheck.sh
+make up            # или ./scripts/up.sh
+make health        # или ./scripts/healthcheck.sh
+make status        # быстрая проверка ✓/✗
 ```
 
 Ожидаемый вывод healthcheck:
@@ -87,14 +91,15 @@ Kibana: http://localhost:5602
 ```bash
 cd ~/GolandProjects/awesomeProject/notes-app
 
-npm run setup
+make sync-env       # DATABASE_URL + KAFKA_BROKERS из notes-infra/.env
+npm run setup       # или: make setup (sync-env + setup)
 ```
 
 Скрипт `setup` делает:
 
 1. `npm install`
 2. копирует `.env.example` → `.env` (если файлов ещё нет)
-3. `prisma generate` + `prisma migrate deploy`
+3. `prisma generate` + `prisma migrate deploy` + seed **admin / admin**
 
 ---
 
@@ -113,6 +118,13 @@ npm run dev
 - Web на `:5173`
 
 Цветной вывод: `[api]`, `[consumer]`, `[web]`.
+
+Проверка всего стека:
+
+```bash
+make status
+# или: npm run status
+```
 
 ### Вариант B — три терминала (GoLand / отладка)
 

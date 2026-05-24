@@ -22,6 +22,13 @@
 - `notes.deleted`
 - `forms.submitted`
 
+## Health endpoints
+
+| Path | Type | HTTP |
+|------|------|------|
+| `GET /api/v1/health` | Liveness — process alive | 200 |
+| `GET /api/v1/health/ready` | Readiness — Postgres + Kafka checks | 200 / 503 |
+
 ## Environment contract
 
 | Variable | Used by | Example |
