@@ -234,7 +234,7 @@ cd notes-infra
 | Kafka UI пустой | Kafka ещё стартует | Подожди 30–60 сек, refresh |
 | Events пустые | Consumer не запущен | `npm run dev:consumer` или `npm run dev` |
 | Consumer: `This server does not host this topic-partition` | Топики Kafka ещё не созданы | Перезапусти `npm run dev` (consumer создаёт топики при старте); убедись что infra поднята |
-| `EADDRINUSE` на порту 3000 | Старый процесс API ещё работает | `lsof -ti :3000 \| xargs kill` затем снова `npm run dev` |
+| `EADDRINUSE` на порту 3000 | Старый процесс API ещё работает | `npm run free-ports` или `make kill-ports` (всё) |
 | `401` в web | Токен протух / не залогинен | Logout → Login |
 | Порт 5433 занят | Другой Postgres | Смени `POSTGRES_PORT` в `.env` infra + `DATABASE_URL` в api |
 | Web не грузит API | Неверный URL | Проверь `apps/web/.env`: `VITE_API_URL=http://localhost:3000` |

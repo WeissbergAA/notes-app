@@ -13,7 +13,8 @@ help:
 	@echo "  make setup         npm install + migrate + seed"
 	@echo "  make dev           Run api + consumer + web"
 	@echo "  make status        Full stack status (infra + app)"
-	@echo "  make backup-db     pg_dump via Docker (in notes-infra)"
+	@echo "  make free-ports     Free API :3000 + Web :5173"
+	@echo "  make kill-ports    Free all ports + docker compose down (infra)"
 
 infra-up:
 	cd $(INFRA_DIR) && ./scripts/up.sh
@@ -32,6 +33,12 @@ sync-env:
 
 setup: sync-env
 	npm run setup
+
+free-ports:
+	bash scripts/free-ports.sh
+
+kill-ports:
+	bash scripts/free-ports.sh --all
 
 dev:
 	npm run dev
