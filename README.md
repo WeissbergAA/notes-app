@@ -25,7 +25,7 @@ Notes App — **pet-project для изучения fullstack-разработк
 | Разделение infra / app | Два репозитория, env-контракт |
 | Наблюдаемость | Pino JSON-логи → Kibana (через notes-infra) |
 
-Проект **не связан с рабочим GitLab/SoftWise** — личный репозиторий на GitHub для практики.
+Личный pet-project на GitHub для практики fullstack и DevOps.
 
 ---
 
