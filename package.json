@@ -1,0 +1,20 @@
+{
+  "name": "notes-app",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:api": "npm run dev -w @notes/api",
+    "dev:web": "npm run dev -w @notes/web",
+    "dev:consumer": "npm run dev -w @notes/consumer",
+    "lint": "npm run lint -ws --if-present",
+    "test": "npm run test -ws --if-present",
+    "build": "npm run build -ws --if-present",
+    "test:e2e": "npm run test:e2e -w @notes/api"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

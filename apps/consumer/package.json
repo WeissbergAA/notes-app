@@ -1,0 +1,25 @@
+{
+  "name": "@notes/consumer",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node src/main.ts",
+    "start": "node dist/main.js",
+    "lint": "tsc --noEmit",
+    "prisma:generate": "prisma generate --schema ../api/prisma/schema.prisma"
+  },
+  "dependencies": {
+    "@notes/shared": "*",
+    "@prisma/client": "^5.22.0",
+    "dotenv": "^16.4.7",
+    "kafkajs": "^2.2.4",
+    "pino": "^9.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "prisma": "^5.22.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  }
+}
