@@ -20,8 +20,9 @@ export class AuthService {
   }
 
   async login(dto: LoginDto) {
+    const email = this.normalizeLoginEmail(dto.email);
     const user = await this.prisma.user.findUnique({
-      where: { email: dto.email.toLowerCase() },
+      where: { email },
     });
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
@@ -44,5 +45,13 @@ export class AuthService {
   private buildToken(userId: string, email: string) {
     const accessToken = this.jwt.sign({ sub: userId, email });
     return { accessToken };
+  }
+
+  private normalizeLoginEmail(raw: string) {
+    const value = raw.trim().toLowerCase();
+    if (value === 'admin') {
+      return 'admin@admin.com';
+    }
+    return value;
   }
 }

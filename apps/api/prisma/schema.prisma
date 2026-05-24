@@ -7,6 +7,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// npm run prisma:seed -w @notes/api
+
 model User {
   id           String   @id @default(uuid())
   email        String   @unique
