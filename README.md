@@ -7,8 +7,73 @@ Monorepo учебного fullstack-проекта **Notes App** — серви�
 - **GitHub (app):** https://github.com/WeissbergAA/notes-app  
 - **GitHub (infra):** https://github.com/WeissbergAA/notes-infra  
 
-> **Быстрый старт:** [docs/QUICKSTART.ru.md](docs/QUICKSTART.ru.md)  
-> **DevOps для новичков:** [docs/DEVOPS-TOUR.ru.md](docs/DEVOPS-TOUR.ru.md) · [docs/CHAOS-LAB.ru.md](docs/CHAOS-LAB.ru.md)
+> **Быстрый старт:** [docs/QUICKSTART.ru.md](docs/QUICKSTART.ru.md)
+
+---
+
+## DevOps: где что лежит
+
+Два репозитория: **infra** поднимает платформу, **app** — код и CI приложения.
+
+### Документация (читать по порядку)
+
+| Файл | Зачем |
+|------|--------|
+| [docs/QUICKSTART.ru.md](docs/QUICKSTART.ru.md) | Запуск с нуля: infra → app → браузер |
+| [docs/DEVOPS-TOUR.ru.md](docs/DEVOPS-TOUR.ru.md) | Схема системы, env-контракт, health, сценарий «создал заметку» |
+| [docs/CHAOS-LAB.ru.md](docs/CHAOS-LAB.ru.md) | Учебные поломки: что ломать и куда смотреть |
+| [docs/architecture.md](docs/architecture.md) | Архитектура (EN) |
+| [docs/deploy.md](docs/deploy.md) | Docker-образы, GHCR |
+
+Infra-доки — в репо **[notes-infra](https://github.com/WeissbergAA/notes-infra)**: `docs/runbook.md`, `docs/setup.md`.
+
+### Скрипты и команды (notes-app)
+
+| Что | Где / команда |
+|-----|----------------|
+| Синхронизация env из infra | `make sync-env` → `scripts/sync-env-from-infra.sh` |
+| Установка + миграции + seed | `make setup` → `scripts/setup.sh` |
+| Запуск api + consumer + web | `make dev` |
+| Статус всего стека | `make status` → `scripts/status.sh` |
+| Шпаргалка команд | `Makefile` в корне |
+
+### Health API (наблюдаемость)
+
+| URL | Тип |
+|-----|-----|
+| `GET /api/v1/health` | Liveness — процесс жив |
+| `GET /api/v1/health/ready` | Readiness — Postgres + Kafka (503 если БД нет) |
+
+Код: `apps/api/src/health/`
+
+### CI/CD
+
+| Файл | Job |
+|------|-----|
+| `.github/workflows/ci.yml` | lint → unit → api e2e → build web |
+| `.github/workflows/publish.yml` | Публикация образов в GHCR (по тегу) |
+
+### Переменные окружения (app)
+
+| Файл | Переменные |
+|------|------------|
+| `apps/api/.env` | `DATABASE_URL`, `KAFKA_BROKERS`, `JWT_SECRET`, `PORT` |
+| `apps/consumer/.env` | `DATABASE_URL`, `KAFKA_BROKERS` |
+| `apps/web/.env` | `VITE_API_URL` |
+
+Источник портов/паролей БД — **`notes-infra/.env`** (не копируется автоматически, только через `make sync-env`).
+
+### Инфраструктура (другой репозиторий)
+
+| Что | Репо `notes-infra` |
+|-----|---------------------|
+| Docker Compose | `docker-compose.dev.yml`, `docker-compose.yml` |
+| Запуск / стоп | `make up`, `make down`, `scripts/up.sh` |
+| Ждать готовности | `make health`, `scripts/healthcheck.sh` |
+| Статус ✓/✗ | `make status`, `scripts/status.sh` |
+| Бэкап Postgres | `make backup`, `scripts/backup-db.sh` |
+| Kafka UI | http://localhost:8080 |
+| Kibana (full) | http://localhost:5602 |
 
 ---
 
@@ -107,20 +172,23 @@ Notes App — **pet-project для изучения fullstack-разработк
 ```
 notes-app/
 ├── apps/
-│   ├── api/              # REST API (NestJS + Prisma + Swagger)
-│   ├── web/              # SPA (React + Vite)
+│   ├── api/              # REST API, health/ready, Kafka producer
+│   ├── web/              # React SPA
 │   └── consumer/         # Kafka consumer → EventAudit
-├── packages/
-│   └── shared/           # Общие типы, Kafka topics
+├── packages/shared/      # Kafka topics, общие типы
+├── scripts/
+│   ├── setup.sh          # install + migrate + seed
+│   ├── sync-env-from-infra.sh  # DATABASE_URL из notes-infra
+│   └── status.sh         # проверка infra + api + web
 ├── docs/
-│   ├── api.md            # Примеры curl
-│   ├── architecture.md   # Архитектура (EN)
-│   └── deploy.md         # Деплой и Docker
-├── .github/workflows/
-│   └── ci.yml            # lint, test, build
-├── docker-compose.override.yml  # Запуск API в Docker (опционально)
-├── CHANGELOG.md
-└── package.json          # npm workspaces
+│   ├── QUICKSTART.ru.md
+│   ├── DEVOPS-TOUR.ru.md   # ← DevOps-тур
+│   ├── CHAOS-LAB.ru.md     # ← учебные поломки
+│   ├── architecture.md
+│   └── deploy.md
+├── Makefile              # make dev, status, sync-env, …
+├── .github/workflows/    # ci.yml, publish.yml
+└── package.json
 ```
 
 ---
@@ -253,7 +321,8 @@ curl -X POST http://localhost:3000/api/v1/notes \
 
 | Метод | Путь | Описание |
 |-------|------|----------|
-| GET | `/api/v1/health` | Health check |
+| GET | `/api/v1/health` | Liveness |
+| GET | `/api/v1/health/ready` | Readiness (Postgres + Kafka) |
 | GET | `/api/docs` | Swagger UI |
 
 ---
@@ -411,9 +480,12 @@ docker run --rm -p 3000:3000 --network notes-net \
 
 ## Дополнительная документация
 
+- [docs/QUICKSTART.ru.md](docs/QUICKSTART.ru.md) — пошаговый запуск
+- [docs/DEVOPS-TOUR.ru.md](docs/DEVOPS-TOUR.ru.md) — DevOps для начинающих
+- [docs/CHAOS-LAB.ru.md](docs/CHAOS-LAB.ru.md) — учебные инциденты
 - [docs/api.md](docs/api.md) — примеры curl
 - [docs/architecture.md](docs/architecture.md) — архитектура
-- [docs/deploy.md](docs/deploy.md) — деплой, GHCR, environments
+- [docs/deploy.md](docs/deploy.md) — деплой, GHCR
 - [CHANGELOG.md](CHANGELOG.md) — история версий
 
 ---
