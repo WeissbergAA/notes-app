@@ -8,7 +8,7 @@ services:
       - "${API_PORT:-3000}:3000"
     environment:
       DATABASE_URL: postgresql://notes:notes@notes-postgres:5432/notes?schema=public
-      KAFKA_BROKERS: notes-kafka:9092
+      KAFKA_BROKERS: notes-kafka:19092
       JWT_SECRET: ${JWT_SECRET:-local-dev-secret}
       CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:5173}
     networks:
@@ -21,7 +21,7 @@ services:
     container_name: notes-consumer
     environment:
       DATABASE_URL: postgresql://notes:notes@notes-postgres:5432/notes?schema=public
-      KAFKA_BROKERS: notes-kafka:9092
+      KAFKA_BROKERS: notes-kafka:19092
     networks:
       - notes-net
 
