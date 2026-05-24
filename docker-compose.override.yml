@@ -1,0 +1,21 @@
+# Local dev override — connect to notes-infra network
+# Usage: docker compose -f docker-compose.override.yml up
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://notes:notes@notes-postgres:5432/notes?schema=public
+      KAFKA_BROKERS: notes-kafka:9092
+      JWT_SECRET: local-dev-secret
+    networks:
+      - notes-net
+
+networks:
+  notes-net:
+    external: true
+    name: notes-net
