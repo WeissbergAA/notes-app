@@ -78,8 +78,31 @@ export async function createNote(payload: {
   return data;
 }
 
+export async function updateNote(
+  id: string,
+  payload: { title?: string; body?: string; tags?: string[] },
+) {
+  const { data } = await api.patch<Note>(`/notes/${id}`, payload);
+  return data;
+}
+
 export async function deleteNote(id: string) {
   await api.delete(`/notes/${id}`);
+}
+
+export interface AuditEvent {
+  id: string;
+  topic: string;
+  payload: Record<string, unknown>;
+  correlationId: string | null;
+  processedAt: string;
+}
+
+export async function getAuditEvents(limit = 50) {
+  const { data } = await api.get<AuditEvent[]>('/events/audit', {
+    params: { limit },
+  });
+  return data;
 }
 
 export async function getForms() {

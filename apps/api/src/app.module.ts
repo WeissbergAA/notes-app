@@ -7,6 +7,7 @@ import { KafkaModule } from './kafka/kafka.module';
 import { HealthModule } from './health/health.module';
 import { AuthModule } from './auth/auth.module';
 import { NotesModule } from './notes/notes.module';
+import { EventsModule } from './events/events.module';
 import { FormsModule } from './forms/forms.module';
 
 @Module({
@@ -45,6 +46,7 @@ import { FormsModule } from './forms/forms.module';
     AuthModule,
     NotesModule,
     FormsModule,
+    EventsModule,
   ],
 })
 export class AppModule {}

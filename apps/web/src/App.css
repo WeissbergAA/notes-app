@@ -56,3 +56,40 @@ button {
 .error {
   color: #c0392b;
 }
+
+.hint {
+  color: #555;
+  font-size: 0.95rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.tags {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.event-card pre {
+  background: #f0f2f6;
+  padding: 0.75rem;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-size: 0.85rem;
+}
+
+.event-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.mono {
+  font-family: monospace;
+  font-size: 0.85rem;
+  color: #444;
+}

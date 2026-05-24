@@ -4,6 +4,7 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Logger } from 'nestjs-pino';
 import { AppModule } from './app.module';
@@ -16,6 +17,11 @@ async function bootstrap() {
   );
 
   app.useLogger(app.get(Logger));
+
+  const config = app.get(ConfigService);
+  const corsOrigin = config.get<string>('CORS_ORIGIN', 'http://localhost:5173');
+  app.enableCors({ origin: corsOrigin, credentials: true });
+
   app.setGlobalPrefix('api/v1');
   app.useGlobalPipes(
     new ValidationPipe({

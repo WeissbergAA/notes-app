@@ -1,0 +1,31 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: notes-api
+    ports:
+      - "${API_PORT:-3000}:3000"
+    environment:
+      DATABASE_URL: postgresql://notes:notes@notes-postgres:5432/notes?schema=public
+      KAFKA_BROKERS: notes-kafka:9092
+      JWT_SECRET: ${JWT_SECRET:-local-dev-secret}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:5173}
+    networks:
+      - notes-net
+
+  consumer:
+    build:
+      context: .
+      dockerfile: apps/consumer/Dockerfile
+    container_name: notes-consumer
+    environment:
+      DATABASE_URL: postgresql://notes:notes@notes-postgres:5432/notes?schema=public
+      KAFKA_BROKERS: notes-kafka:9092
+    networks:
+      - notes-net
+
+networks:
+  notes-net:
+    external: true
+    name: notes-net

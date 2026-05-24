@@ -9,6 +9,8 @@
     "dev:api": "npm run dev -w @notes/api",
     "dev:web": "npm run dev -w @notes/web",
     "dev:consumer": "npm run dev -w @notes/consumer",
+    "setup": "bash scripts/setup.sh",
+    "docker:app": "docker compose -f docker-compose.app.yml up --build",
     "lint": "npm run lint -ws --if-present",
     "test": "npm run test -ws --if-present",
     "build": "npm run build -ws --if-present",
